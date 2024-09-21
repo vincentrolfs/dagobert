@@ -4,7 +4,7 @@ var currencyFactors = {
   EUR: 1,
   TRY: 0.0262674
 };
-var DATE_START = "2024-09-18";
+var DATE_START = "2024-09-21";
 var BUDGET_PER_DAY = 25;
 
 // src/data/data.ts
@@ -125,7 +125,7 @@ var render = () => {
       expected: formatNum(dayCount * BUDGET_PER_DAY),
       result: formatNum(dayCount * BUDGET_PER_DAY - globalSum)
     },
-    [className, "t-bold"]
+    [className]
   );
 };
 var reset = () => {
@@ -147,15 +147,7 @@ var addEntryAction = () => {
       return value;
     }
     data.entries.push({
-      amountOriginal: Math.random() * 100,
-      currencyOriginal: "EUR",
-      currencyFactorOriginal: 1,
-      amountEur: Math.random() * 100,
-      reason: "",
-      timestamp: "2024-09-19",
-      date: "2024-09-19"
-    });
-    data.entries.push({
+      id: Math.random().toString().substring(2),
       amountOriginal: value,
       currencyOriginal: data.settings.defaultCurrency,
       currencyFactorOriginal: currencyFactors[data.settings.defaultCurrency],
