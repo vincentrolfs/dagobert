@@ -1,0 +1,52 @@
+<html lang="en" class="holiday-css-light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dagobert</title>
+    <link rel="stylesheet" href="css/classless.css" />
+    <link rel="stylesheet" href="css/main.css" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <form class="input" id="input">
+        <input type="number" name="amountOriginal" placeholder="Amount" />
+        <textarea name="reason" placeholder="Reason"></textarea>
+        <select name="currencyOriginal">
+          <option value="EUR">Euro</option>
+          <option value="TRY">Turkish Lira</option>
+        </select>
+        <button type="submit">Save</button>
+      </form>
+
+      <div class="stats">
+        <span id="globalStats" class="blueprint">
+          <span class="_result"></span> after
+          <span class="_dayCount"></span> days (expected
+          <span class="_expected"></span>, cost
+          <span class="_cost"></span>).</span
+        >
+      </div>
+
+      <div class="list">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="listRow" class="blueprint">
+              <td class="_date">1</td>
+              <td class="_amount">2</td>
+              <td class="_reason">3</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script src="dist/index.js"></script>
+  </body>
+</html>

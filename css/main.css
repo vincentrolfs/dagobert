@@ -1,0 +1,48 @@
+* {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+}
+
+.wrapper {
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  max-width: 1000px;
+  padding: 32px;
+}
+
+.list {
+  width: 100%;
+}
+
+form#input {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+form {
+  width: 100%;
+  max-width: unset;
+}
+
+table {
+  width: 100%;
+  display: table;
+}
+
+th {
+  text-align: left;
+}
+
+.t-bold {
+  font-weight: bold;
+}
+
+.blueprint {
+  display: none;
+}
