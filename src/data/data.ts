@@ -2,6 +2,7 @@ import { Currency, DATA_KEY } from "../constants/constants";
 
 export type Data = {
   entries: {
+    id: string;
     amountOriginal: number;
     currencyOriginal: Currency;
     currencyFactorOriginal: number;

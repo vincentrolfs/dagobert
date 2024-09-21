@@ -74,7 +74,7 @@ export const render = () => {
       expected: formatNum(dayCount * BUDGET_PER_DAY),
       result: formatNum(dayCount * BUDGET_PER_DAY - globalSum),
     },
-    [className, "t-bold"]
+    [className]
   );
 };
 

@@ -19,16 +19,7 @@ export const addEntryAction = () => {
     }
 
     data.entries.push({
-      amountOriginal: Math.random() * 100,
-      currencyOriginal: "EUR",
-      currencyFactorOriginal: 1,
-      amountEur: Math.random() * 100,
-      reason: "",
-      timestamp: "2024-09-19",
-      date: "2024-09-19",
-    });
-
-    data.entries.push({
+      id: Math.random().toString().substring(2),
       amountOriginal: value,
       currencyOriginal: data.settings.defaultCurrency,
       currencyFactorOriginal: currencyFactors[data.settings.defaultCurrency],
