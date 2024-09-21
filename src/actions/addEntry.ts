@@ -23,7 +23,9 @@ export const addEntryAction = () => {
       amountOriginal: value,
       currencyOriginal: data.settings.defaultCurrency,
       currencyFactorOriginal: currencyFactors[data.settings.defaultCurrency],
-      amountEur: value * currencyFactors[data.settings.defaultCurrency],
+      amountEur: parseFloat(
+        (value * currencyFactors[data.settings.defaultCurrency]).toFixed(2)
+      ),
       reason: reason.value?.trim() || "",
       timestamp: new Date().toISOString(),
       date: getLocalDate(),

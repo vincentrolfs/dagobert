@@ -151,7 +151,9 @@ var addEntryAction = () => {
       amountOriginal: value,
       currencyOriginal: data.settings.defaultCurrency,
       currencyFactorOriginal: currencyFactors[data.settings.defaultCurrency],
-      amountEur: value * currencyFactors[data.settings.defaultCurrency],
+      amountEur: parseFloat(
+        (value * currencyFactors[data.settings.defaultCurrency]).toFixed(2)
+      ),
       reason: ((_b = reason.value) == null ? void 0 : _b.trim()) || "",
       timestamp: (/* @__PURE__ */ new Date()).toISOString(),
       date: getLocalDate()
