@@ -2,7 +2,7 @@ import { render } from "./render/render";
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", function () {
-    navigator.serviceWorker.register("/service-worker.js").then(
+    navigator.serviceWorker.register("service-worker.js").then(
       (r) => {
         r.update();
         console.log("ServiceWorker registration successful", r);
