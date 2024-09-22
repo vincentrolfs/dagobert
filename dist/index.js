@@ -6,6 +6,18 @@ var currencyFactors = {
 };
 var DATE_START = "2024-09-21";
 var BUDGET_PER_DAY = 25;
+var Classes = {
+  Render: "render",
+  ListRowEntry: "listRow-entry",
+  ListRowEntryId: "listRow-entry-id",
+  ListRowSummary: "listRow-summary",
+  DeleteEntry: "deleteEntry"
+};
+var Ids = {
+  Input: "input",
+  ListRow: "listRow",
+  GlobalStats: "globalStats"
+};
 
 // src/data/data.ts
 var defaultData = {
@@ -23,6 +35,54 @@ var data = (() => {
 })();
 var saveData = () => {
   console.info("saving", data);
+  const newEntries = [
+    {
+      id: "4111850078187538",
+      amountOriginal: 120,
+      currencyOriginal: "TRY",
+      currencyFactorOriginal: 0.0262674,
+      amountEur: 3.152088,
+      reason: "one cappucino",
+      timestamp: "2024-09-21T20:53:23.179Z",
+      date: "2024-09-21"
+    },
+    {
+      id: "05052973657392301",
+      amountOriginal: 50,
+      currencyOriginal: "TRY",
+      currencyFactorOriginal: 0.0262674,
+      amountEur: 1.31337,
+      reason: "turkish ground coffee",
+      timestamp: "2024-09-21T20:52:49.030Z",
+      date: "2024-09-21"
+    },
+    {
+      id: "739185707487249",
+      amountOriginal: 60,
+      currencyOriginal: "TRY",
+      currencyFactorOriginal: 0.0262674,
+      amountEur: 1.576044,
+      reason: "sweet turkish fired balls",
+      timestamp: "2024-09-21T20:49:58.645Z",
+      date: "2024-09-21"
+    },
+    {
+      id: "5891633995089558",
+      amountOriginal: 120,
+      currencyOriginal: "TRY",
+      currencyFactorOriginal: 0.0262674,
+      amountEur: 3.152088,
+      reason: "turkish tea",
+      timestamp: "2024-09-21T20:49:47.146Z",
+      date: "2024-09-21"
+    }
+  ];
+  newEntries.forEach((newEntry) => {
+    if (data.entries.find((x) => x.id === newEntry.id)) {
+      return;
+    }
+    data.entries.push(newEntry);
+  });
   localStorage.setItem(DATA_KEY, JSON.stringify(data));
 };
 
@@ -33,106 +93,8 @@ var find = (id, name) => {
   );
 };
 
-// src/dom/blueprint.ts
-var blueprint = (id, map, classNames) => {
-  const blueprint2 = document.querySelector(`#${id}.blueprint`);
-  if (!blueprint2) {
-    throw new Error(`not found: #${id}.blueprint`);
-  }
-  const clone = blueprint2.cloneNode(true);
-  clone.classList.remove("blueprint");
-  classNames.forEach((x) => clone.classList.add(x));
-  Object.entries(map).forEach(([key, value]) => {
-    const child = clone.querySelector(`._${key}`);
-    if (!child) {
-      return;
-    }
-    child.classList.remove(`_${key}`);
-    child.innerHTML = value.toString();
-  });
-  blueprint2.parentElement.appendChild(clone);
-  return clone;
-};
-
-// src/utils/formatNum.ts
-var formatNum = (n) => {
-  return n.toFixed(2);
-};
-
 // src/utils/getLocalDate.ts
 var getLocalDate = () => (/* @__PURE__ */ new Date()).toLocaleString("sv-SE", { dateStyle: "short" });
-
-// src/utils/previousDate.ts
-var previousDate = (dateString) => {
-  const date = new Date(dateString);
-  date.setDate(date.getDate() - 1);
-  return date.toISOString().split("T")[0];
-};
-
-// src/render/render.ts
-var renderCount = 0;
-var render = () => {
-  const className = reset();
-  find("input", "currencyOriginal").value = data.settings.defaultCurrency;
-  const entriesByDate = data.entries.reduce(
-    (entries, entry) => {
-      entries[entry.date] = entries[entry.date] ?? [];
-      entries[entry.date].push(entry);
-      return entries;
-    },
-    {}
-  );
-  let dayCount = 0;
-  let globalSum = 0;
-  let date = getLocalDate();
-  while (true) {
-    const entries = entriesByDate[date] ?? [];
-    const sum = entries.reduce((x, e) => x + e.amountEur, 0);
-    dayCount++;
-    globalSum += sum;
-    blueprint(
-      "listRow",
-      {
-        date,
-        amount: formatNum(sum) + ` (budget: ${BUDGET_PER_DAY > sum ? "+" : ""}${formatNum(
-          BUDGET_PER_DAY - sum
-        )})`,
-        reason: "Summary"
-      },
-      [className, "t-bold"]
-    );
-    entries.forEach((e) => {
-      blueprint(
-        "listRow",
-        {
-          date: e.date,
-          amount: formatNum(e.amountEur),
-          reason: e.reason
-        },
-        [className]
-      );
-    });
-    if (date === DATE_START) {
-      break;
-    }
-    date = previousDate(date);
-  }
-  blueprint(
-    "globalStats",
-    {
-      dayCount: dayCount.toString(),
-      cost: formatNum(globalSum),
-      expected: formatNum(dayCount * BUDGET_PER_DAY),
-      result: formatNum(dayCount * BUDGET_PER_DAY - globalSum)
-    },
-    [className]
-  );
-};
-var reset = () => {
-  document.querySelectorAll(`._render${renderCount}`).forEach((x) => x.remove());
-  renderCount++;
-  return `_render${renderCount}`;
-};
 
 // src/actions/addEntry.ts
 var addEntryAction = () => {
@@ -168,6 +130,25 @@ var addEntryAction = () => {
   };
 };
 
+// src/actions/deleteEntry.ts
+var deleteEntryAction = () => {
+  document.querySelectorAll(`.${Classes.DeleteEntry}`).forEach(
+    (el) => el.onclick = (e) => {
+      var _a, _b;
+      const classes = (_b = (_a = e.currentTarget.parentElement) == null ? void 0 : _a.parentElement) == null ? void 0 : _b.classList;
+      classes == null ? void 0 : classes.forEach((c) => {
+        if (c.startsWith(Classes.ListRowEntryId)) {
+          const id = c.substring(Classes.ListRowEntryId.length);
+          data.deleted = data.deleted ?? {};
+          data.deleted[id] = true;
+          saveData();
+        }
+      });
+      render();
+    }
+  );
+};
+
 // src/actions/saveCurrency.ts
 var saveCurrencyAction = () => {
   const input = find("input", "currencyOriginal");
@@ -181,8 +162,111 @@ var saveCurrencyAction = () => {
 var setupActions = () => {
   saveCurrencyAction();
   addEntryAction();
+  deleteEntryAction();
+};
+
+// src/dom/blueprint.ts
+var blueprint = (id, map, classNames) => {
+  const blueprint2 = document.querySelector(`#${id}.blueprint`);
+  if (!blueprint2) {
+    throw new Error(`not found: #${id}.blueprint`);
+  }
+  const clone = blueprint2.cloneNode(true);
+  clone.classList.remove("blueprint");
+  classNames.forEach((x) => clone.classList.add(x));
+  Object.entries(map).forEach(([key, value]) => {
+    const child = clone.querySelector(`._${key}`);
+    if (!child) {
+      return;
+    }
+    child.classList.remove(`_${key}`);
+    child.innerHTML = value.toString();
+  });
+  blueprint2.parentElement.appendChild(clone);
+  return clone;
+};
+
+// src/utils/formatNum.ts
+var formatNum = (n) => {
+  return n.toFixed(2);
+};
+
+// src/utils/previousDate.ts
+var previousDate = (dateString) => {
+  const date = new Date(dateString);
+  date.setDate(date.getDate() - 1);
+  return date.toISOString().split("T")[0];
+};
+
+// src/render/render.ts
+var renderCount = 0;
+var render = () => {
+  const className = reset();
+  find(Ids.Input, "currencyOriginal").value = data.settings.defaultCurrency;
+  const entriesByDate = data.entries.reduce(
+    (entries, entry) => {
+      var _a;
+      if ((_a = data.deleted) == null ? void 0 : _a[entry.id]) {
+        return entries;
+      }
+      entries[entry.date] = entries[entry.date] ?? [];
+      entries[entry.date].push(entry);
+      return entries;
+    },
+    {}
+  );
+  let dayCount = 0;
+  let globalSum = 0;
+  let date = getLocalDate();
+  while (true) {
+    const entries = entriesByDate[date] ?? [];
+    const sum = entries.reduce((x, e) => x + e.amountEur, 0);
+    dayCount++;
+    globalSum += sum;
+    blueprint(
+      Ids.ListRow,
+      {
+        date,
+        amount: formatNum(sum) + ` (budget: ${BUDGET_PER_DAY > sum ? "+" : ""}${formatNum(
+          BUDGET_PER_DAY - sum
+        )})`,
+        reason: "Summary"
+      },
+      [className, Classes.ListRowSummary]
+    );
+    entries.forEach((e) => {
+      blueprint(
+        Ids.ListRow,
+        {
+          date: e.date,
+          amount: formatNum(e.amountEur),
+          reason: e.reason
+        },
+        [className, Classes.ListRowEntry, `${Classes.ListRowEntryId}${e.id}`]
+      );
+    });
+    if (date === DATE_START) {
+      break;
+    }
+    date = previousDate(date);
+  }
+  blueprint(
+    Ids.GlobalStats,
+    {
+      dayCount: dayCount.toString(),
+      cost: formatNum(globalSum),
+      expected: formatNum(dayCount * BUDGET_PER_DAY),
+      result: formatNum(dayCount * BUDGET_PER_DAY - globalSum)
+    },
+    [className]
+  );
+  setupActions();
+};
+var reset = () => {
+  document.querySelectorAll(`.${Classes.Render}${renderCount}`).forEach((x) => x.remove());
+  renderCount++;
+  return `${Classes.Render}${renderCount}`;
 };
 
 // src/index.ts
-setupActions();
 render();

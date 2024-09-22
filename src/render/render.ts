@@ -1,4 +1,10 @@
-import { BUDGET_PER_DAY, DATE_START } from "../constants/constants";
+import { setupActions } from "../actions/setupActions";
+import {
+  BUDGET_PER_DAY,
+  DATE_START,
+  Classes,
+  Ids,
+} from "../constants/constants";
 import { Data, data } from "../data/data";
 import { blueprint } from "../dom/blueprint";
 import { find } from "../dom/find";
@@ -11,11 +17,15 @@ let renderCount = 0;
 export const render = () => {
   const className = reset();
 
-  find<HTMLSelectElement>("input", "currencyOriginal").value =
+  find<HTMLSelectElement>(Ids.Input, "currencyOriginal").value =
     data.settings.defaultCurrency;
 
   const entriesByDate = data.entries.reduce<Record<string, Data["entries"]>>(
     (entries, entry) => {
+      if (data.deleted?.[entry.id]) {
+        return entries;
+      }
+
       entries[entry.date] = entries[entry.date] ?? [];
       entries[entry.date].push(entry);
       return entries;
@@ -34,7 +44,7 @@ export const render = () => {
     globalSum += sum;
 
     blueprint(
-      "listRow",
+      Ids.ListRow,
       {
         date: date,
         amount:
@@ -44,18 +54,18 @@ export const render = () => {
           )})`,
         reason: "Summary",
       },
-      [className, "t-bold"]
+      [className, Classes.ListRowSummary]
     );
 
     entries.forEach((e) => {
       blueprint(
-        "listRow",
+        Ids.ListRow,
         {
           date: e.date,
           amount: formatNum(e.amountEur),
           reason: e.reason,
         },
-        [className]
+        [className, Classes.ListRowEntry, `${Classes.ListRowEntryId}${e.id}`]
       );
     });
 
@@ -67,7 +77,7 @@ export const render = () => {
   }
 
   blueprint(
-    "globalStats",
+    Ids.GlobalStats,
     {
       dayCount: dayCount.toString(),
       cost: formatNum(globalSum),
@@ -76,14 +86,16 @@ export const render = () => {
     },
     [className]
   );
+
+  setupActions();
 };
 
 const reset = () => {
   document
-    .querySelectorAll(`._render${renderCount}`)
+    .querySelectorAll(`.${Classes.Render}${renderCount}`)
     .forEach((x) => x.remove());
 
   renderCount++;
 
-  return `_render${renderCount}`;
+  return `${Classes.Render}${renderCount}`;
 };

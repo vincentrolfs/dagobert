@@ -1,4 +1,5 @@
-import { Currency, data, saveData } from "../data/data";
+import { Currency } from "../constants/constants";
+import { data, saveData } from "../data/data";
 import { find } from "../dom/find";
 
 export const saveCurrencyAction = () => {

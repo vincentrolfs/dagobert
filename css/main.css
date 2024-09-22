@@ -39,10 +39,14 @@ th {
   text-align: left;
 }
 
-.t-bold {
+#globalStats {
   font-weight: bold;
 }
 
 .blueprint {
+  display: none;
+}
+
+.listRow-summary .deleteEntry {
   display: none;
 }
