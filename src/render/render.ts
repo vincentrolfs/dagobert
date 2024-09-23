@@ -1,3 +1,4 @@
+import { UTCTimestamp } from "lightweight-charts";
 import { setupActions } from "../actions/setupActions";
 import {
   BUDGET_PER_DAY,
@@ -8,6 +9,7 @@ import {
 import { Data, data } from "../data/data";
 import { blueprint } from "../dom/blueprint";
 import { find } from "../dom/find";
+import { budgetSeries, SeriesData, spendingSeries } from "../dom/setupChart";
 import { formatNum } from "../utils/formatNum";
 import { getLocalDate } from "../utils/getLocalDate";
 import { previousDate } from "../utils/previousDate";
@@ -33,31 +35,34 @@ export const render = () => {
     {}
   );
 
-  let dayCount = 0;
-  let globalSum = 0;
   let date = getLocalDate();
+  let budgetData: SeriesData = [];
+  const spendingData: SeriesData = [];
 
   while (true) {
-    const entries = entriesByDate[date] ?? [];
-    const sum = entries.reduce((x, e) => x + e.amountEur, 0);
-    dayCount++;
-    globalSum += sum;
+    const timestamp = Math.round(+new Date(date) / 1000) as UTCTimestamp;
+    const currentEntries = entriesByDate[date] ?? [];
+    const currentBudget = BUDGET_PER_DAY;
+    const currentSpending = currentEntries.reduce((x, e) => x + e.amountEur, 0);
+
+    budgetData.push({ value: currentBudget, time: timestamp });
+    spendingData.push({ value: currentSpending, time: timestamp });
 
     blueprint(
       Ids.ListRow,
       {
         date: date,
         amount:
-          formatNum(sum) +
-          ` (budget: ${BUDGET_PER_DAY > sum ? "+" : ""}${formatNum(
-            BUDGET_PER_DAY - sum
+          formatNum(currentSpending) +
+          ` (budget: ${currentBudget > currentSpending ? "+" : ""}${formatNum(
+            currentBudget - currentSpending
           )})`,
         reason: "Summary",
       },
       [className, Classes.ListRowSummary]
     );
 
-    entries.forEach((e) => {
+    currentEntries.forEach((e) => {
       blueprint(
         Ids.ListRow,
         {
@@ -76,16 +81,22 @@ export const render = () => {
     date = previousDate(date);
   }
 
+  const dayCount = spendingData.length + 1;
+  const totalSpending = spendingData.reduce((x, e) => x + e.value, 0);
+
   blueprint(
     Ids.GlobalStats,
     {
       dayCount: dayCount.toString(),
-      cost: formatNum(globalSum),
+      cost: formatNum(totalSpending),
       expected: formatNum(dayCount * BUDGET_PER_DAY),
-      result: formatNum(dayCount * BUDGET_PER_DAY - globalSum),
+      result: formatNum(dayCount * BUDGET_PER_DAY - totalSpending),
     },
     [className]
   );
+
+  spendingSeries.setData(computeAccumulation(spendingData));
+  budgetSeries.setData(computeAccumulation(budgetData));
 
   setupActions();
 };
@@ -98,4 +109,11 @@ const reset = () => {
   renderCount++;
 
   return `${Classes.Render}${renderCount}`;
+};
+
+const computeAccumulation = (input: SeriesData): SeriesData => {
+  return [...input].reverse().reduce<SeriesData>((ret, entry) => {
+    ret.push({ ...entry, value: entry.value + (ret.at(-1)?.value ?? 0) });
+    return ret;
+  }, []);
 };

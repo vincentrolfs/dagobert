@@ -8,6 +8,10 @@ export const deleteEntryAction = () => {
     .forEach(
       (el) =>
         (el.onclick = (e) => {
+          if (!window.confirm("Delete this entry?")) {
+            return;
+          }
+
           const classes = (e.currentTarget as Element).parentElement
             ?.parentElement?.classList;
 

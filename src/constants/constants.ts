@@ -22,4 +22,5 @@ export const Ids = {
   Input: "input",
   ListRow: "listRow",
   GlobalStats: "globalStats",
+  Chart: "chart",
 };

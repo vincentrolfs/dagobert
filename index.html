@@ -9,7 +9,13 @@
   <body>
     <div class="wrapper">
       <form class="input" id="input">
-        <input type="number" name="amountOriginal" placeholder="Amount" />
+        <input
+          type="number"
+          step="0.01"
+          min="0"
+          name="amountOriginal"
+          placeholder="Amount"
+        />
         <textarea name="reason" placeholder="Reason"></textarea>
         <select name="currencyOriginal">
           <option value="EUR">Euro</option>
@@ -26,6 +32,8 @@
           <span class="_cost"></span>)</span
         >
       </div>
+
+      <div id="chart"></div>
 
       <div class="list">
         <table>

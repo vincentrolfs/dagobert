@@ -1,3 +1,4 @@
+import { setupChart } from "./dom/setupChart";
 import { render } from "./render/render";
 
 if ("serviceWorker" in navigator) {
@@ -12,4 +13,5 @@ if ("serviceWorker" in navigator) {
   });
 }
 
+setupChart();
 render();
