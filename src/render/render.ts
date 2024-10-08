@@ -81,7 +81,7 @@ export const render = () => {
     date = previousDate(date);
   }
 
-  const dayCount = spendingData.length + 1;
+  const dayCount = spendingData.length;
   const totalSpending = spendingData.reduce((x, e) => x + e.value, 0);
 
   blueprint(

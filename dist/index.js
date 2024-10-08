@@ -6629,7 +6629,7 @@ var render = () => {
     }
     date = previousDate(date);
   }
-  const dayCount = spendingData.length + 1;
+  const dayCount = spendingData.length;
   const totalSpending = spendingData.reduce((x2, e2) => x2 + e2.value, 0);
   blueprint(
     Ids.GlobalStats,

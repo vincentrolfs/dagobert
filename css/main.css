@@ -1,22 +1,32 @@
 * {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-}
-
-body {
+  font-size: 12pt;
 }
 
 .wrapper {
   flex-direction: column;
   display: flex;
   align-items: center;
+  gap: 1em;
 
-  width: 100%;
-  max-width: 1000px;
-  padding: 32px;
+  margin: 1em 0px;
 }
 
 .list {
   width: 100%;
+}
+
+input,
+textarea,
+select,
+button {
+  padding: 4px;
+}
+
+th,
+td {
+  border-left: 0;
+  border-right: 0;
 }
 
 form#input {
@@ -39,6 +49,10 @@ th {
   text-align: left;
 }
 
+#chart td {
+  border: 0;
+}
+
 #globalStats {
   font-weight: bold;
 }
@@ -49,4 +63,8 @@ th {
 
 .listRow-summary .deleteEntry {
   display: none;
+}
+
+.listRow-summary {
+  font-style: italic;
 }
